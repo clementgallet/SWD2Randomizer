@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.IO.Compression;
@@ -162,12 +158,20 @@ namespace SWD2Randomizer
             {
                 File.Move(Path.Combine(baseDir, "data01.impak"), zipFile);
             }
+            catch (IOException)
+            {
+                MessageBox.Show("Cannot move the game file, you need to close the game", "Access error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                randomizeBtn.Text = "Randomize";
+                this.UseWaitCursor = false;
+                checkOrigFile();
+                return;
+            }
             catch (UnauthorizedAccessException)
             {
                 MessageBox.Show("Does not have access to the current directory", "Access error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 randomizeBtn.Text = "Randomize";
-                randomizeBtn.Enabled = true;
                 this.UseWaitCursor = false;
+                checkOrigFile();
                 return;
             }
 
