@@ -16,12 +16,14 @@ namespace SWD2Randomizer
         public Access CanAccess { get; set; }
         public string Grant { get; set; }
         public Access CanEscape { get; set; }
+        public Access CanEscapeWithoutNew { get; set; }
 
         public Location()
         {
             Type = RandomizeType.None;
             CanAccess = have => true;
             CanEscape = have => true;
+            CanEscapeWithoutNew = have => true;
         }
     }
 }

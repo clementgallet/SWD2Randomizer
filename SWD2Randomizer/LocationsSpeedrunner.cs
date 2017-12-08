@@ -132,7 +132,8 @@ namespace SWD2Randomizer
                     Grant = "pressurebomb.launcher",
                     Type = Location.RandomizeType.Upgrade,
                     CanAccess = have => have.Contains("top_yarrow"),
-                    CanEscape = have => have.Contains("pressurebomb") || (have.Contains("steampack") && have.Contains("steampack.slayer"))
+                    CanEscape = have => (have.Contains("pressurebomb") && have.Contains("pressurebomb.launcher")) || (have.Contains("steampack") && have.Contains("steampack.slayer")),
+                    CanEscapeWithoutNew = have => have.Contains("pressurebomb")
                 },
                 new Location
                 {
@@ -155,7 +156,8 @@ namespace SWD2Randomizer
                     Grant = "hook",
                     Type = Location.RandomizeType.Upgrade,
                     CanAccess = have => have.Contains("oasis"),
-                    CanEscape = have => have.Contains("hook") || have.Contains("pressurebomb") || have.Contains("steampack")
+                    CanEscape = have => have.Contains("hook") || (have.Contains("pressurebomb") && have.Contains("pressurebomb.launcher")) || have.Contains("steampack"),
+                    CanEscapeWithoutNew = have => have.Contains("pressurebomb")
                 },
                 new Location
                 {
@@ -163,7 +165,8 @@ namespace SWD2Randomizer
                     Grant = "steampack.slayer",
                     Type = Location.RandomizeType.Upgrade,
                     CanAccess = have => have.Contains("yarrow_barrier_1") && (have.Contains("steampack") || (have.Contains("pressurebomb") && have.Contains("pressurebomb.launcher")) || have.Contains("hook")),
-                    CanEscape = have => (have.Contains("steampack") && have.Contains("steampack.slayer")) || have.Contains("pressurebomb")
+                    CanEscape = have => have.Contains("steampack") && have.Contains("steampack.slayer"),
+                    CanEscapeWithoutNew = have => have.Contains("pressurebomb")
                 },
                 new Location
                 {

@@ -125,7 +125,7 @@ namespace SWD2Randomizer
                         /* Make a copy of our items and add the granted item, then check if we can escape */
                         List<string> itemsAdded = new List<string>(haveFlags);
                         itemsAdded.Add(location.Grant);
-                        if (location.CanEscape(itemsAdded))
+                        if (location.CanEscape(itemsAdded) || location.CanEscapeWithoutNew(haveFlags))
                         {
                             /* We can successfully grab the item and escape! Add the item to our list */
                             haveFlags.Add(location.Grant);
