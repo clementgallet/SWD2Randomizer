@@ -23,7 +23,7 @@ namespace SWD2Randomizer
             Type = RandomizeType.None;
             CanAccess = have => true;
             CanEscape = have => true;
-            CanEscapeWithoutNew = have => true;
+            CanEscapeWithoutNew = have => false;
         }
     }
 }
