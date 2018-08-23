@@ -14,6 +14,7 @@ namespace SWD2Randomizer
         {
             InitializeComponent();
             listDifficulty.SelectedItem = "Speedrunner";
+            this.gamepath.Text = Properties.Settings.Default.gamePath;
             checkPath();
             checkOrigFile();
         }
@@ -24,6 +25,8 @@ namespace SWD2Randomizer
             if (gamepathBrowserDialog.ShowDialog() == DialogResult.OK)
             {
                 gamepath.Text = gamepathBrowserDialog.SelectedPath;
+                Properties.Settings.Default.gamePath = this.gamepath.Text;
+                Properties.Settings.Default.Save();
                 checkPath();
                 checkOrigFile();
             }
