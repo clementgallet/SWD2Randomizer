@@ -66,6 +66,12 @@ namespace SWD2Randomizer
 
         private void restoreBtn_Click(object sender, EventArgs e)
         {
+            this.UseWaitCursor = true;
+            restoreBtn.Text = "Restoring...";
+            restoreBtn.Enabled = false;
+
+            logText.Clear();
+
             string basedir = Path.Combine(gamepath.Text, "Bundle");
             try
             {
@@ -76,6 +82,12 @@ namespace SWD2Randomizer
             {
                 MessageBox.Show("Does not have access to the game directory", "Access error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            logText.Text = "Restoring game data finished!";
+            logText.Update();
+
+            restoreBtn.Text = "Restore";
+            this.UseWaitCursor = false;
 
             checkOrigFile();
         }
