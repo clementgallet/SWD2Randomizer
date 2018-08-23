@@ -125,7 +125,7 @@ namespace SWD2Randomizer
                 return;
             }
 
-            logsb.Append("Seed is ").AppendLine(seed);
+            logsb.Append("Seed is ").AppendLine(textSeed.Text);
             logText.Text = logsb.ToString();
             logText.Update();
 
