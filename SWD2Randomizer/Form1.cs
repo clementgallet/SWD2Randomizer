@@ -224,6 +224,24 @@ namespace SWD2Randomizer
                     logsb.AppendLine("").AppendLine("Successfully found a correct case!");
                     logText.Text = logsb.ToString();
                     logText.Update();
+
+                    /* Save upgrade locations into a file */
+                    string cheatFile = Path.Combine(Directory.GetCurrentDirectory(), textSeed.Text + ".txt");
+                    using (StreamWriter outputFile = new StreamWriter(cheatFile))
+                    {
+                        foreach (var location in locations)
+                        {
+                            if (location.Type == SWD2Randomizer.Location.RandomizeType.Upgrade)
+                            {
+                                outputFile.WriteLine(location.Name + " location contains " + location.Grant);
+                            }
+                        }
+                    }
+
+                    logsb.AppendLine("Created cheat file at " + cheatFile);
+                    logText.Text = logsb.ToString();
+                    logText.Update();
+
                     break;
                 }
                 logsb.Append(".");
