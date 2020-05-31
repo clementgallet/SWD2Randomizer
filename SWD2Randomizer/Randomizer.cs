@@ -53,6 +53,8 @@ namespace SWD2Randomizer
                     upgrades.Add(upgrade);
                 }
             }
+            // Ensure order of upgrade
+            upgrades.Sort();
         }
 
         public int Randomize()
