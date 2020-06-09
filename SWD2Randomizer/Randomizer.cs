@@ -24,7 +24,6 @@ namespace SWD2Randomizer
             upgrades = new List<string>();
 
             GetUpgradeFlags();
-//            upgrades = mem.GetUpgradeNames();
         }
 
         public void GetUpgradeFlags()
@@ -59,7 +58,10 @@ namespace SWD2Randomizer
         {
             bool ret;
 
-            ret = PermuteFlags(upgrades, Location.RandomizeType.Upgrade);
+            ret = PermuteFlags(Location.RandomizeType.Upgrade);
+            if (!ret) return -1;
+
+            ret = PermuteFlags(Location.RandomizeType.Area);
             if (!ret) return -1;
 
             ret = CheckValid();
@@ -90,6 +92,132 @@ namespace SWD2Randomizer
                             if (location.Name == upgradeNode["Property"]["Value"].InnerText)
                             {
                                 upgradeNode["Property"]["Value"].InnerText = location.Grant;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                doc.Save(patchFile);
+            }
+
+            Dictionary<string, string> areaDoors = new Dictionary<string, string>();
+            Dictionary<string, string> caveDoors = new Dictionary<string, string>();
+            Dictionary<string, string> areaLevel = new Dictionary<string, string>();
+
+            foreach (string patchFile in patchFiles)
+            {
+                XmlDocument doc = new XmlDocument();
+                try
+                {
+                    doc.Load(patchFile);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("caught exception");
+                }
+
+                XmlNodeList doorNodes = doc.SelectNodes("//CustomEntity[Definition='door']");
+                foreach (XmlNode doorNode in doorNodes)
+                {
+                    string area_door = doorNode["Name"].InnerText;
+                    XmlNode cave = doorNode.SelectSingleNode("Property[Name='DestinationLevel']");
+                    XmlNode cave_door = doorNode.SelectSingleNode("Property[Name='DestinationEntity']");
+
+                    foreach (var location in locations)
+                    {
+                        if (location.Type == Location.RandomizeType.Area)
+                        {
+                            if (location.Name == cave["Value"].InnerText)
+                            {
+                                areaDoors[location.Name] = area_door;
+                                caveDoors[location.Name] = cave_door["Value"].InnerText;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (string patchFile in patchFiles)
+            {
+                XmlDocument doc = new XmlDocument();
+                try
+                {
+                    doc.Load(patchFile);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("caught exception");
+                }
+
+                XmlNodeList doorNodes = doc.SelectNodes("//CustomEntity[Definition='door']");
+                foreach (XmlNode doorNode in doorNodes)
+                {
+                    string cave_door = doorNode["Name"].InnerText;
+                    XmlNode area = doorNode.SelectSingleNode("Property[Name='DestinationLevel']");
+
+                    foreach (var location in locations)
+                    {
+                        if (location.Type == Location.RandomizeType.Area)
+                        {
+                            if (cave_door == caveDoors[location.Name])
+                            {
+                                areaLevel[location.Name] = area["Value"].InnerText;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+/*            foreach (var location in locations)
+            {
+                if (location.Type == Location.RandomizeType.Area)
+                {
+                    Console.WriteLine(location.Name);
+                    Console.Write("   cave door: ");
+                    Console.WriteLine(caveDoors[location.Name]);
+                    Console.Write("   area door: ");
+                    Console.WriteLine(areaDoors[location.Name]);
+                    Console.Write("   area level: ");
+                    Console.WriteLine(areaLevel[location.Name]);
+                }
+            }
+*/
+            foreach (string patchFile in patchFiles)
+            {
+                XmlDocument doc = new XmlDocument();
+                try
+                {
+                    doc.Load(patchFile);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("caught exception");
+                }
+
+                XmlNodeList doorNodes = doc.SelectNodes("//CustomEntity[Definition='door']");
+                foreach (XmlNode doorNode in doorNodes)
+                {
+                    string this_door = doorNode["Name"].InnerText;
+                    XmlNode dest_level = doorNode.SelectSingleNode("Property[Name='DestinationLevel']");
+                    XmlNode dest_door = doorNode.SelectSingleNode("Property[Name='DestinationEntity']");
+
+                    foreach (var location in locations)
+                    {
+                        if (location.Type == Location.RandomizeType.Area)
+                        {
+                            if (this_door == areaDoors[location.Name])
+                            {
+                                dest_level["Value"].InnerText = location.Grant;
+                                dest_door["Value"].InnerText = caveDoors[location.Grant];
+                                break;
+                            }
+                            if (this_door == caveDoors[location.Name])
+                            {
+                                dest_level["Value"].InnerText = areaLevel[location.Grant];
+                                dest_door["Value"].InnerText = areaDoors[location.Grant];
                                 break;
                             }
                         }
@@ -152,9 +280,18 @@ namespace SWD2Randomizer
             }
         }
 
-        private bool PermuteFlags(List<string> flags, Location.RandomizeType type)
+        private bool PermuteFlags(Location.RandomizeType type)
         {
-            List<string> randomized_flags = new List<string>(flags);
+            List<string> randomized_flags = new List<string>();
+
+            foreach (var location in locations)
+            {
+                if (location.Type == type)
+                {
+                    randomized_flags.Add(location.Name);
+                }
+            }
+
             Shuffle(randomized_flags);
             int i = 0;
             foreach (var location in locations)

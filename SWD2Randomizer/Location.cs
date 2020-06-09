@@ -8,7 +8,8 @@ namespace SWD2Randomizer
         public enum RandomizeType
         {
             None,
-            Upgrade
+            Upgrade,
+            Area
         }
 
         public RandomizeType Type { get; set; }

@@ -251,6 +251,13 @@ namespace SWD2Randomizer
                                 outputFile.WriteLine(location.Name + " location contains " + location.Grant);
                             }
                         }
+                        foreach (var location in locations)
+                        {
+                            if (location.Type == SWD2Randomizer.Location.RandomizeType.Area)
+                            {
+                                outputFile.WriteLine("Door to " + location.Name + " contains " + location.Grant);
+                            }
+                        }
                     }
 
                     logsb.AppendLine("Created cheat file at " + cheatFile);
