@@ -216,10 +216,10 @@ namespace SWD2Randomizer
                                 dest_door["Value"].InnerText = caveDoors[location.Grant];
                                 break;
                             }
-                            if (this_door == caveDoors[location.Name])
+                            if (this_door == caveDoors[location.Grant])
                             {
-                                dest_level["Value"].InnerText = areaLevel[location.Grant];
-                                dest_door["Value"].InnerText = areaDoors[location.Grant];
+                                dest_level["Value"].InnerText = areaLevel[location.Name];
+                                dest_door["Value"].InnerText = areaDoors[location.Name];
                                 break;
                             }
                         }
