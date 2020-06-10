@@ -12,7 +12,6 @@ namespace SWD2Randomizer
         private readonly int seed;
         private List<string> haveFlags;
         private List<Location> locations;
-        public List<string> upgrades;
 
         public Randomizer(string baseDir, int seed, List<Location> locations)
         {
@@ -21,39 +20,6 @@ namespace SWD2Randomizer
             this.seed = seed;
             this.baseDir = baseDir;
             haveFlags = new List<string>();
-            upgrades = new List<string>();
-
-            GetUpgradeFlags();
-        }
-
-        public void GetUpgradeFlags()
-        {
-            upgrades.Clear();
-
-            string[] patchFiles = Directory.GetFiles(Path.Combine(baseDir, "Patchsets"), "*.le", SearchOption.AllDirectories);
-
-            foreach (string patchFile in patchFiles)
-            {
-                //Console.WriteLine("Looking into file {0}", patchFile);
-                XmlDocument doc = new XmlDocument();
-                try
-                {
-                    doc.Load(patchFile);
-                }
-                catch(Exception e)
-                {
-                    Console.WriteLine("caught exception");
-                }
-
-                XmlNodeList upgradeNodes = doc.SelectNodes("//CustomEntity[Name='upgrade_podium' or Name='upgrade_podium1'] | //ScriptEntity[Name='GiveBlueprint' or Name='GiveBlueprint1']");
-                foreach (XmlNode upgradeNode in upgradeNodes)
-                {
-                    string upgrade = upgradeNode["Property"]["Value"].InnerText;
-                    upgrades.Add(upgrade);
-                }
-            }
-            // Ensure order of upgrade
-            upgrades.Sort();
         }
 
         public int Randomize()
@@ -71,6 +37,10 @@ namespace SWD2Randomizer
 
             /* Write into the game */
             string[] patchFiles = Directory.GetFiles(Path.Combine(baseDir, "Patchsets"), "*.le", SearchOption.AllDirectories);
+
+            Dictionary<string, string> areaDoors = new Dictionary<string, string>();
+            Dictionary<string, string> caveDoors = new Dictionary<string, string>();
+            Dictionary<string, string> areaLevel = new Dictionary<string, string>();
 
             foreach (string patchFile in patchFiles)
             {
@@ -100,25 +70,6 @@ namespace SWD2Randomizer
                     }
                 }
 
-                doc.Save(patchFile);
-            }
-
-            Dictionary<string, string> areaDoors = new Dictionary<string, string>();
-            Dictionary<string, string> caveDoors = new Dictionary<string, string>();
-            Dictionary<string, string> areaLevel = new Dictionary<string, string>();
-
-            foreach (string patchFile in patchFiles)
-            {
-                XmlDocument doc = new XmlDocument();
-                try
-                {
-                    doc.Load(patchFile);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("caught exception");
-                }
-
                 XmlNodeList doorNodes = doc.SelectNodes("//CustomEntity[Definition='door']");
                 foreach (XmlNode doorNode in doorNodes)
                 {
@@ -139,6 +90,8 @@ namespace SWD2Randomizer
                         }
                     }
                 }
+
+                doc.Save(patchFile);
             }
 
             foreach (string patchFile in patchFiles)

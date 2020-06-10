@@ -196,10 +196,6 @@ namespace SWD2Randomizer
 
             ZipFile.ExtractToDirectory(zipFile, extractedDir);
 
-            logsb.AppendLine("Query item flags: ");
-            logText.Text = logsb.ToString();
-            logText.Update();
-
             List<Location> locations;
             if (difficulty == "Speedrunner")
             {
@@ -211,13 +207,6 @@ namespace SWD2Randomizer
             }
 
             Randomizer randomizer = new Randomizer(extractedDir, parsedSeed, locations);
-            foreach(string upgrade in randomizer.upgrades)
-            {
-                logsb.Append(upgrade).Append(", ");
-            }
-            logsb.AppendLine("");
-            logText.Text = logsb.ToString();
-            logText.Update();
 
             logsb.Append("Randomize");
             logText.Text = logsb.ToString();

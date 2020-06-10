@@ -168,8 +168,9 @@ namespace SWD2Randomizer
                     Name = "hook",
                     Grant = "hook",
                     Type = Location.RandomizeType.Upgrade,
-                    CanAccess = have => have.Contains("oasis"),
-                    CanEscape = have => have.Contains("hook") || (have.Contains("pressurebomb") && have.Contains("pressurebomb.launcher")) || have.Contains("steampack"),
+                    CanAccess = have => have.Contains("the_hub_cave_grapplinghook"),
+/*                    CanAccess = have => have.Contains("oasis"),
+*/                    CanEscape = have => have.Contains("hook") || (have.Contains("pressurebomb") && have.Contains("pressurebomb.launcher")) || have.Contains("steampack"),
                     CanEscapeWithoutNew = have => have.Contains("pressurebomb")
                 },
                 new Location
@@ -407,25 +408,36 @@ namespace SWD2Randomizer
                 {
                     Name = "firetemple_cave_boxes",
                     Grant = "firetemple_cave_boxes",
+                    Type = Location.RandomizeType.Area,
                     CanAccess = have => have.Contains("lava_pit")
                 },
                 new Location
                 {
                     Name = "firetemple_cave_hell_carts",
                     Grant = "firetemple_cave_hell_carts",
+                    Type = Location.RandomizeType.Area,
                     CanAccess = have => have.Contains("lava_pit")
                 },
                 new Location
                 {
                     Name = "firetemple_cave_armor",
                     Grant = "firetemple_cave_armor",
+                    Type = Location.RandomizeType.Area,
                     CanAccess = have => have.Contains("lava_pit")
                 },
                 new Location
                 {
                     Name = "firetemple_cave_generator2",
                     Grant = "firetemple_cave_generator2",
+                    Type = Location.RandomizeType.Area,
                     CanAccess = have => have.Contains("lava_pit")
+                },
+                new Location
+                {
+                    Name = "the_hub_cave_grapplinghook",
+                    Grant = "the_hub_cave_grapplinghook",
+                    Type = Location.RandomizeType.Area,
+                    CanAccess = have => have.Contains("oasis")
                 },
             };
         }
