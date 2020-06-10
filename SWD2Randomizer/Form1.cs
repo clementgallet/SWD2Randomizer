@@ -270,6 +270,10 @@ namespace SWD2Randomizer
             logText.Text = logsb.ToString();
             logText.Update();
 
+            /* Add some convenient patches */
+            Patcher patcher = new Patcher(extractedDir);
+            patcher.PatchAll();           
+
             ZipFile.CreateFromDirectory(extractedDir, Path.Combine(baseDir, "data01.impak"));
 
             logsb.AppendLine("Done!");

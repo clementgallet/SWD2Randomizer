@@ -200,7 +200,7 @@ namespace SWD2Randomizer
                     Name = "hook.long_hook",
                     Grant = "hook.long_hook",
                     Type = Location.RandomizeType.Upgrade,
-                    CanAccess = have => have.Contains("firetemple_cave_treasure_chamber") && have.Contains("top_totd") && have.Contains("middle_totd") && have.Contains("pickaxe.fire")
+                    CanAccess = have => have.Contains("firetemple_cave_treasure_chamber")
                 },
                 new Location
                 {
@@ -400,7 +400,7 @@ namespace SWD2Randomizer
                     Name = "firetemple_cave_treasure_chamber",
                     Grant = "firetemple_cave_treasure_chamber",
                     Type = Location.RandomizeType.Area,
-                    CanAccess = have => have.Contains("middle_totd") && have.Contains("pickaxe.fire"),
+                    CanAccess = have => have.Contains("top_totd") && have.Contains("middle_totd") && have.Contains("pickaxe.fire")
                 },
                 new Location
                 {
