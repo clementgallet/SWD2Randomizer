@@ -167,7 +167,8 @@ namespace SWD2Randomizer
                     Grant = "jackhammer",
                     Type = Location.RandomizeType.Upgrade,
                     CanAccess = have => have.Contains("archaea_cave_jackhammer") && (have.Contains("pressurebomb") || have.Contains("jackhammer") || have.Contains("hook")),
-                    CanEscape = have => have.Contains("pressurebomb") || have.Contains("jackhammer") || (have.Contains("steampack") && have.Contains("steampack.slayer"))
+                    CanEscape = have => have.Contains("jackhammer") || (have.Contains("steampack") && have.Contains("steampack.slayer")),
+                    CanEscapeWithoutNew = have => have.Contains("pressurebomb")
                 },
                 new Location
                 {
@@ -175,8 +176,7 @@ namespace SWD2Randomizer
                     Grant = "hook",
                     Type = Location.RandomizeType.Upgrade,
                     CanAccess = have => have.Contains("the_hub_cave_grapplinghook"),
-/*                    CanAccess = have => have.Contains("oasis"),
-*/                    CanEscape = have => have.Contains("hook") || (have.Contains("pressurebomb") && have.Contains("pressurebomb.launcher")) || have.Contains("steampack"),
+                    CanEscape = have => have.Contains("hook") || (have.Contains("pressurebomb") && have.Contains("pressurebomb.launcher")) || have.Contains("steampack"),
                     CanEscapeWithoutNew = have => have.Contains("pressurebomb")
                 },
                 new Location
@@ -296,7 +296,7 @@ namespace SWD2Randomizer
                     Name = "temple_of_guidance_2_cave_generator",
                     Grant = "temple_of_guidance_2_cave_generator",
                     Type = Location.RandomizeType.Area,
-                    CanAccess = have => have.Contains("top_yarrow") && (have.Contains("hook") || have.Contains("steampack") || (have.Contains("pressurebomb") && have.Contains("pressurebomb.launcher")))
+                    CanAccess = have => have.Contains("top_yarrow") && (have.Contains("hook") || have.Contains("steampack"))
                 },
                 new Location
                 {

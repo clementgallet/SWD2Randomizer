@@ -20,6 +20,7 @@ namespace SWD2Randomizer
             PatchPriest();
             PatchHook();
             PatchTriple();
+            PatchOasis();
         }
 
         /* Make the ignition axe effective against Priest Glorious */
@@ -65,7 +66,62 @@ namespace SWD2Randomizer
             if (door != null)
                 door["Property"]["Value"].InnerText = "True";
 
+            XmlNode target = doc.SelectSingleNode("//Connection[TargetId='32586635']");
+            target.ParentNode.RemoveChild(target);
+
             doc.Save(hubPatch);
+        }
+
+        /* Open Oasis front gate */
+        public void PatchOasis()
+        {
+            string hubPatch = Path.Combine(baseDir, "Patchsets", "TheHub", "the_hub_patch_entrance.le");
+
+            XmlDocument doc = new XmlDocument();
+            try
+            {
+                doc.Load(hubPatch);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("caught exception");
+            }
+
+            XmlNode door = doc.SelectSingleNode("//CustomEntity[Id='32586370']");
+
+            if (door != null)
+                door["Property"]["Value"].InnerText = "True";
+
+/*            XmlNode target = doc.SelectSingleNode("//Connection[TargetId='32566844']");
+            target["TargetId"].InnerText = "32575030";
+*/
+            doc.Save(hubPatch);
+
+            string quests = Path.Combine(baseDir, "Definitions", "quests.xml");
+
+            try
+            {
+                doc.Load(quests);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("caught exception");
+            }
+
+            XmlNode questHub1 = doc.SelectSingleNode("//Quest[@Name='quest_find_the_hub']");
+            questHub1.Attributes["Template"].Value = "SIDE_QUEST";
+            questHub1.RemoveChild(questHub1["UnlockedBy"]);
+            questHub1.RemoveChild(questHub1["PopupMap"]);
+            questHub1.RemoveChild(questHub1["Pointer"]);
+
+            XmlNode questHub2 = doc.SelectSingleNode("//Quest[@Name='quest_reload_the_hub']");
+            questHub2.Attributes["Template"].Value = "SIDE_QUEST";
+            questHub2.RemoveChild(questHub2["UnlockedBy"]);
+
+            XmlNode questRosie = doc.SelectSingleNode("//Quest[@Name='quest_talk_to_rosie']");
+            questRosie["UnlockedBy"].InnerText = "quest_report_to_mayor_jackhammer";
+
+            doc.Save(quests);
         }
 
         /* Lower the price of triple grenade blueprint */
@@ -206,7 +262,13 @@ namespace SWD2Randomizer
 			<Position>1988, 2035</Position>
 			<Definition>CompleteQuest</Definition>
 			<Area>1921, 2003, 132, 63</Area>
-			<Connections />
+			<Connections>
+				<Connection>
+					<SourceContact>out</SourceContact>
+					<TargetContact>in</TargetContact>
+					<TargetId>32581848</TargetId>
+				</Connection>
+			</Connections>
 			<Property>
 				<Name>QuestName</Name>
 				<Type>String</Type>
@@ -214,6 +276,63 @@ namespace SWD2Randomizer
 			</Property>
             ";
 
+            checkQuestProp = doc.SelectSingleNode("//ScriptEntity[Id='32581848']");
+
+            checkQuestProp.InnerXml = @"
+			<Id>32581848</Id>
+			<Name>ProgressQuest5</Name>
+			<Position>2168, 2036</Position>
+			<Definition>ProgressQuest</Definition>
+			<Area>2101, 2004, 132, 63</Area>
+			<Connections>
+				<Connection>
+					<SourceContact>out</SourceContact>
+					<TargetContact>in</TargetContact>
+					<TargetId>32566045</TargetId>
+				</Connection>
+			</Connections>
+			<Property>
+				<Name>QuestName</Name>
+				<Type>String</Type>
+				<Value>quest_find_the_hub</Value>
+			</Property>
+			<Property>
+				<Name>ObjectiveName</Name>
+				<Type>String</Type>
+				<Value>obj_find_the_hub</Value>
+			</Property>
+			<Property>
+				<Name>Increase</Name>
+				<Type>Int32</Type>
+				<Value>1</Value>
+			</Property>
+            ";
+
+            checkQuestProp = doc.SelectSingleNode("//ScriptEntity[Id='32566045']");
+
+            checkQuestProp.InnerXml = @"
+			<Id>32566045</Id>
+			<Name>ProgressQuest5</Name>
+			<Position>2389, 2036</Position>
+			<Definition>ProgressQuest</Definition>
+			<Area>2280, 2004, 216, 63</Area>
+			<Connections/>
+			<Property>
+				<Name>QuestName</Name>
+				<Type>String</Type>
+				<Value>quest_reload_the_hub</Value>
+			</Property>
+			<Property>
+				<Name>ObjectiveName</Name>
+				<Type>String</Type>
+				<Value>obj_reload_the_hub</Value>
+			</Property>
+			<Property>
+				<Name>Increase</Name>
+				<Type>Int32</Type>
+				<Value>1</Value>
+			</Property>
+            ";
 
             doc.Save(introPatch);
         }
