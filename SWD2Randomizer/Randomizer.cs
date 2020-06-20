@@ -49,7 +49,7 @@ namespace SWD2Randomizer
                 {
                     doc.Load(patchFile);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("caught exception");
                 }
@@ -101,7 +101,7 @@ namespace SWD2Randomizer
                 {
                     doc.Load(patchFile);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("caught exception");
                 }
@@ -126,20 +126,6 @@ namespace SWD2Randomizer
                 }
             }
 
-/*            foreach (var location in locations)
-            {
-                if (location.Type == Location.RandomizeType.Area)
-                {
-                    Console.WriteLine(location.Name);
-                    Console.Write("   cave door: ");
-                    Console.WriteLine(caveDoors[location.Name]);
-                    Console.Write("   area door: ");
-                    Console.WriteLine(areaDoors[location.Name]);
-                    Console.Write("   area level: ");
-                    Console.WriteLine(areaLevel[location.Name]);
-                }
-            }
-*/
             foreach (string patchFile in patchFiles)
             {
                 XmlDocument doc = new XmlDocument();
@@ -147,7 +133,7 @@ namespace SWD2Randomizer
                 {
                     doc.Load(patchFile);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("caught exception");
                 }
@@ -181,6 +167,8 @@ namespace SWD2Randomizer
 
                 doc.Save(patchFile);
             }
+
+            RandomizeResources();
 
             return 1;
         }
@@ -270,5 +258,60 @@ namespace SWD2Randomizer
             return true;
         }
 
+        public void RandomizeResources()
+        {
+
+            /* Write into the game */
+            string resourcesFile = Path.Combine(baseDir, "Definitions", "resource_table.xml");
+
+            List<string> oreList = new List<string>();
+            List<string> gemList = new List<string>();
+
+            XmlDocument doc = new XmlDocument();
+            try
+            {
+                doc.Load(resourcesFile);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("caught exception");
+            }
+
+            XmlNode oreNodes = doc.SelectSingleNode("//ResourceTable[@Name='default']/ResourceGroup[@Name='ore']");
+
+            foreach (XmlNode ore in oreNodes.ChildNodes)
+            {
+                if (ore.Name == "Entry")
+                    oreList.Add(ore.Attributes["Name"].Value);
+            }
+
+            Shuffle(oreList);
+
+            int i = 0;
+            foreach (XmlNode ore in oreNodes.ChildNodes)
+            {
+                if (ore.Name == "Entry")
+                    ore.Attributes["Name"].Value = oreList[i++];
+            }
+
+            XmlNode gemNodes = doc.SelectSingleNode("//ResourceTable[@Name='default']/ResourceGroup[@Name='gem']");
+
+            foreach (XmlNode gem in gemNodes.ChildNodes)
+            {
+                if (gem.Name == "Entry")
+                    gemList.Add(gem.Attributes["Name"].Value);
+            }
+
+            Shuffle(gemList);
+
+            i = 0;
+            foreach (XmlNode gem in gemNodes.ChildNodes)
+            {
+                if (gem.Name == "Entry")
+                    gem.Attributes["Name"].Value = gemList[i++];
+            }
+
+            doc.Save(resourcesFile);
+        }
     }
 }
