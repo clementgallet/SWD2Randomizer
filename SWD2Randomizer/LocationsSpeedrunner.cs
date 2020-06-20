@@ -19,7 +19,7 @@ namespace SWD2Randomizer
                 {
                     Name = "break_one_rock",
                     Grant = "break_one_rock",
-                    CanAccess = have => have.Contains("jackhammer") || have.Contains("pressurebomb") || have.Contains("fate.explosions")
+                    CanAccess = have => have.Contains("jackhammer") || have.Contains("fate.explosions")
                 },
                 new Location
                 {
@@ -92,13 +92,13 @@ namespace SWD2Randomizer
                 {
                     Name = "top_totd",
                     Grant = "top_totd",
-                    CanAccess = have => have.Contains("hook") || have.Contains("steampack")
+                    CanAccess = have => have.Contains("jackhammer") && (have.Contains("hook") || have.Contains("steampack"))
                 },
                 new Location
                 {
                     Name = "middle_totd",
                     Grant = "middle_totd",
-                    CanAccess = have => (have.Contains("top_totd") && (have.Contains("jackhammer") || have.Contains("pressurebomb"))) || (have.Contains("archaea_barrier") && have.Contains("break_rocks")) || (have.Contains("oasis") && have.Contains("pressurebomb"))
+                    CanAccess = have => (have.Contains("top_totd") && have.Contains("jackhammer")) || (have.Contains("archaea_barrier") && have.Contains("break_rocks")) || (have.Contains("oasis") && have.Contains("pressurebomb"))
                 },
                 new Location
                 {

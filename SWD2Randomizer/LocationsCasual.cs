@@ -87,7 +87,7 @@ namespace SWD2Randomizer
                 {
                     Name = "top_totd",
                     Grant = "top_totd",
-                    CanAccess = have => have.Contains("hook")
+                    CanAccess = have => have.Contains("jackhammer") && (have.Contains("hook") || have.Contains("steampack"))
                 },
                 new Location
                 {
