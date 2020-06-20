@@ -21,6 +21,7 @@ namespace SWD2Randomizer
             PatchHook();
             PatchTriple();
             PatchOasis();
+            PatchBlueprints();
         }
 
         /* Make the ignition axe effective against Priest Glorious */
@@ -33,7 +34,7 @@ namespace SWD2Randomizer
             {
                 doc.Load(damageTypePatch);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("caught exception");
             }
@@ -56,7 +57,7 @@ namespace SWD2Randomizer
             {
                 doc.Load(hubPatch);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("caught exception");
             }
@@ -82,7 +83,7 @@ namespace SWD2Randomizer
             {
                 doc.Load(hubPatch);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("caught exception");
             }
@@ -103,7 +104,7 @@ namespace SWD2Randomizer
             {
                 doc.Load(quests);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("caught exception");
             }
@@ -134,7 +135,7 @@ namespace SWD2Randomizer
             {
                 doc.Load(priceList);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("caught exception");
             }
@@ -157,7 +158,7 @@ namespace SWD2Randomizer
             {
                 doc.Load(quests);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("caught exception");
             }
@@ -185,7 +186,7 @@ namespace SWD2Randomizer
             {
                 doc.Load(introPatch);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("caught exception");
             }
@@ -337,6 +338,46 @@ namespace SWD2Randomizer
             doc.Save(introPatch);
         }
 
+        /* Lower the price of triple grenade blueprint */
+        public void PatchBlueprints()
+        {
+            string upgradeList = Path.Combine(baseDir, "Definitions", "upgrades.xml");
 
+            XmlDocument doc = new XmlDocument();
+            try
+            {
+                doc.Load(upgradeList);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("caught exception");
+            }
+
+            XmlNode blueprint = doc.SelectSingleNode("//Upgrade[@Name='fate.bloodquest']");
+
+            XmlNode name = doc.CreateNode(XmlNodeType.Element, "CategoryStringId", null);
+            name.InnerText = "upgrade_fate_bloodquest";
+            blueprint.AppendChild(name);
+
+            blueprint = doc.SelectSingleNode("//Upgrade[@Name='fate.xpx2']");
+
+            name = doc.CreateNode(XmlNodeType.Element, "CategoryStringId", null);
+            name.InnerText = "upgrade_fate_xpx2";
+            blueprint.AppendChild(name);
+
+            blueprint = doc.SelectSingleNode("//Upgrade[@Name='fate.explosions']");
+
+            name = doc.CreateNode(XmlNodeType.Element, "CategoryStringId", null);
+            name.InnerText = "upgrade_fate_explosions";
+            blueprint.AppendChild(name);
+
+            blueprint = doc.SelectSingleNode("//Upgrade[@Name='pressurebomb.launcher_triple']");
+
+            name = doc.CreateNode(XmlNodeType.Element, "CategoryStringId", null);
+            name.InnerText = "upgrade_pressurebomb_launcher_triple";
+            blueprint.AppendChild(name);
+
+            doc.Save(upgradeList);
+        }
     }
 }
