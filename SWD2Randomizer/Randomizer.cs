@@ -169,6 +169,7 @@ namespace SWD2Randomizer
             }
 
             RandomizeResources();
+            RandomizeCogUpgrades();
 
             return 1;
         }
@@ -312,6 +313,131 @@ namespace SWD2Randomizer
             }
 
             doc.Save(resourcesFile);
+        }
+
+        public void RandomizeCogUpgrade(XmlDocument doc, string upgrade, string ignore_upgrade1, string ignore_upgrade2, string add_upgrade1, string add_upgrade2)
+        {
+            List<string> upgrades = new List<string>();
+
+            XmlNode upgradeNode = doc.SelectSingleNode("//Upgrade[@Name='" + upgrade + "']");
+            if (upgradeNode["LockedUpgrades"] != null)
+            {
+                for (int k = upgradeNode["LockedUpgrades"].ChildNodes.Count - 1; k >= 0; k--)
+                {
+                    XmlNode locked = upgradeNode["LockedUpgrades"].ChildNodes[k];
+                    if (locked.Name != "LockedUpgrade")
+                        continue;
+
+                    /* Skip the ignore */
+                    if ((ignore_upgrade1 != null) && (locked.Attributes["Id"].Value == ignore_upgrade1))
+                        continue;
+
+                    if ((ignore_upgrade2 != null) && (locked.Attributes["Id"].Value == ignore_upgrade2))
+                        continue;
+
+                    upgrades.Add(locked.Attributes["Id"].Value);
+                    upgradeNode["LockedUpgrades"].RemoveChild(locked);
+                }
+            }
+
+            foreach (XmlNode tier in upgradeNode.ChildNodes)
+            {
+                if (tier.Name == "Tier")
+                {
+                    /* Skip the first tier if we got an upgrade already */
+                    if ((tier["MoneyCost"] == null) || (tier["MoneyCost"].InnerText == "0"))
+                        if (upgrades.Count != 0)
+                            continue;
+
+                    if (tier["SubUpgrade"] != null)
+                    {
+                        upgrades.Add(tier["SubUpgrade"].Attributes["Id"].Value);
+                        tier.RemoveChild(tier["SubUpgrade"]);
+                    }
+                    else
+                    {
+                        upgrades.Add(null);
+                    }
+                }
+            }
+
+            /* Add upgrades */
+            if (add_upgrade1 != null)
+            {
+                for (int j = 0; j < upgrades.Count; j++)
+                {
+                    if (upgrades[j] == null)
+                    {
+                        upgrades[j] = add_upgrade1;
+                        add_upgrade1 = null;
+                        break;
+                    }
+                }
+                if (add_upgrade1 != null)
+                    upgrades.Add(add_upgrade1);
+            }
+
+            if (add_upgrade2 != null)
+            {
+                for (int j = 0; j < upgrades.Count; j++)
+                {
+                    if (upgrades[j] == null)
+                    {
+                        upgrades[j] = add_upgrade2;
+                        add_upgrade1 = null;
+                        break;
+                    }
+                }
+                if (add_upgrade2 != null)
+                    upgrades.Add(add_upgrade2);
+            }
+
+            Shuffle(upgrades);
+
+            int i = 0;
+
+            foreach (XmlNode tier in upgradeNode.ChildNodes)
+            {
+                if (tier.Name == "Tier")
+                {
+                    if (upgrades[i] != null)
+                    {
+                        XmlNode sub = doc.CreateNode(XmlNodeType.Element, "SubUpgrade", null);
+                        XmlAttribute attr = doc.CreateAttribute("Id");
+                        attr.Value = upgrades[i];
+                        sub.Attributes.Append(attr);
+                        tier.AppendChild(sub);
+                    }
+                    i++;
+                }
+            }
+        }
+
+        public void RandomizeCogUpgrades()
+        {
+
+            string upgradesFile = Path.Combine(baseDir, "Definitions", "upgrades.xml");
+
+            XmlDocument doc = new XmlDocument();
+            try
+            {
+                doc.Load(upgradesFile);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("caught exception");
+            }
+
+            RandomizeCogUpgrade(doc, "pickaxe", "pickaxe.fire", null, null, null);
+            RandomizeCogUpgrade(doc, "backpack", null, null, null, null);
+            RandomizeCogUpgrade(doc, "lamp", null, null, "lamp.damaging_light", null);
+            RandomizeCogUpgrade(doc, "armor", "armor.damage_reduction", null, null, null);
+            RandomizeCogUpgrade(doc, "watertank", null, null, "watertank.water_pickup", null);
+            RandomizeCogUpgrade(doc, "pressurebomb", "pressurebomb.launcher", "pressurebomb.launcher_triple", "pressurebomb.increased_radius", "pressurebomb.improved_water");
+            RandomizeCogUpgrade(doc, "jackhammer", null, null, "jackhammer.shockwave", "jackhammer.improved_water");
+            RandomizeCogUpgrade(doc, "steampack", "steampack.slayer", null, null, null);
+
+            doc.Save(upgradesFile);
         }
     }
 }
