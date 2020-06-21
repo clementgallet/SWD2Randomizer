@@ -22,6 +22,7 @@ namespace SWD2Randomizer
             PatchTriple();
             PatchOasis();
             PatchBlueprints();
+            PatchRosie();
         }
 
         /* Make the ignition axe effective against Priest Glorious */
@@ -76,53 +77,27 @@ namespace SWD2Randomizer
         /* Open Oasis front gate */
         public void PatchOasis()
         {
-            string hubPatch = Path.Combine(baseDir, "Patchsets", "TheHub", "the_hub_patch_entrance.le");
+            string levels = Path.Combine(baseDir, "Definitions", "levels.xml");
 
             XmlDocument doc = new XmlDocument();
             try
             {
-                doc.Load(hubPatch);
+                doc.Load(levels);
             }
             catch (Exception)
             {
                 Console.WriteLine("caught exception");
             }
 
-            XmlNode door = doc.SelectSingleNode("//CustomEntity[Id='32586370']");
+            XmlNode hubIntro = doc.SelectSingleNode("//Level[@Name='the_hub']/LayerFilters/Filter[@Layer='filter_intro']");
+            hubIntro.ParentNode.RemoveChild(hubIntro);
 
-            if (door != null)
-                door["Property"]["Value"].InnerText = "True";
+            XmlNode hubPostIntro = doc.SelectSingleNode("//Level[@Name='the_hub']/LayerFilters/Filter[@Layer='filter_post_intro']");
+            hubPostIntro.InnerXml = @"
+				<Enable/>
+                <Disable Quest = ""quest_destroy_all_generators"" Status = ""completed"" />";
 
-/*            XmlNode target = doc.SelectSingleNode("//Connection[TargetId='32566844']");
-            target["TargetId"].InnerText = "32575030";
-*/
-            doc.Save(hubPatch);
-
-            string quests = Path.Combine(baseDir, "Definitions", "quests.xml");
-
-            try
-            {
-                doc.Load(quests);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("caught exception");
-            }
-
-            XmlNode questHub1 = doc.SelectSingleNode("//Quest[@Name='quest_find_the_hub']");
-            questHub1.Attributes["Template"].Value = "SIDE_QUEST";
-            questHub1.RemoveChild(questHub1["UnlockedBy"]);
-            questHub1.RemoveChild(questHub1["PopupMap"]);
-            questHub1.RemoveChild(questHub1["Pointer"]);
-
-            XmlNode questHub2 = doc.SelectSingleNode("//Quest[@Name='quest_reload_the_hub']");
-            questHub2.Attributes["Template"].Value = "SIDE_QUEST";
-            questHub2.RemoveChild(questHub2["UnlockedBy"]);
-
-            XmlNode questRosie = doc.SelectSingleNode("//Quest[@Name='quest_talk_to_rosie']");
-            questRosie["UnlockedBy"].InnerText = "quest_report_to_mayor_jackhammer";
-
-            doc.Save(quests);
+            doc.Save(levels);
         }
 
         /* Lower the price of triple grenade blueprint */
@@ -321,12 +296,12 @@ namespace SWD2Randomizer
 			<Property>
 				<Name>QuestName</Name>
 				<Type>String</Type>
-				<Value>quest_reload_the_hub</Value>
+				<Value>quest_enter_temple</Value>
 			</Property>
 			<Property>
 				<Name>ObjectiveName</Name>
 				<Type>String</Type>
-				<Value>obj_reload_the_hub</Value>
+				<Value>obj_enter_temple</Value>
 			</Property>
 			<Property>
 				<Name>Increase</Name>
@@ -378,6 +353,73 @@ namespace SWD2Randomizer
             blueprint.AppendChild(name);
 
             doc.Save(upgradeList);
+        }
+
+        /* Make Rosie fight trivial */
+        public void PatchRosie()
+        {
+            string hubmain = Path.Combine(baseDir, "Patchsets", "TheHub", "the_hub_patch_main.le");
+
+            XmlDocument doc = new XmlDocument();
+            try
+            {
+                doc.Load(hubmain);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("caught exception");
+            }
+
+            XmlNode doorLevel = doc.SelectSingleNode("//ScriptEntity[Id='32595987']/Property[Name='DestinationLevel']");
+            doorLevel["Value"].InnerText = "the_hub_cave_boss_saving_rusty";
+
+            XmlNode doorEntity = doc.SelectSingleNode("//ScriptEntity[Id='32595987']/Property[Name='DestinationEntity']");
+            doorEntity["Value"].InnerText = "";
+
+            doc.Save(hubmain);
+
+
+            string bosses = Path.Combine(baseDir, "Definitions", "entities.bosses.xml");
+
+            try
+            {
+                doc.Load(bosses);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("caught exception");
+            }
+
+            XmlNode rosie = doc.SelectSingleNode("//Entity[@Name='rosie_boss']");
+
+            rosie["Health"]["Health"].InnerText = "1999";
+            rosie["Health"]["HurtShakeAmount"].InnerText = "2";
+
+            for (int i = rosie["BossRosieComponent"]["Phases"].ChildNodes.Count - 1; i >= 0; i--)
+            {
+                XmlNode rosiePhase = rosie["BossRosieComponent"]["Phases"].ChildNodes[i];
+                if (rosiePhase.Name == "Phase")
+                {
+                    if (rosiePhase.Attributes["Index"].Value == "0")
+                    {
+                        continue;
+                    }
+                    else if (rosiePhase.Attributes["Index"].Value == "1")
+                    {
+                        rosiePhase.Attributes["DisabledSignalEnd"].Value = "disabled_end_late";
+                        continue;
+                    }
+                    else if (rosiePhase.Attributes["Index"].Value == "6")
+                    {
+                        rosiePhase.Attributes["Index"].Value = "2";
+                        continue;
+                    }
+                }
+
+                rosie["BossRosieComponent"]["Phases"].RemoveChild(rosiePhase);
+            }
+
+            doc.Save(bosses);
         }
     }
 }
