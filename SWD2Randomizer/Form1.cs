@@ -104,15 +104,34 @@ namespace SWD2Randomizer
             string zipFile = Path.Combine(Directory.GetCurrentDirectory(), "data01.impak.zip");
             string extractedDir = Path.Combine(Directory.GetCurrentDirectory(), "data01");
 
+            string enfile = Path.Combine(baseDir, "Language", "en.csv.z");
+            using (FileStream originalFileStream = File.OpenRead(enfile))
+            {
+                originalFileStream.Seek(6, SeekOrigin.Begin);
+                string newFileName = enfile.Remove(enfile.Length - 2);
+
+                using (FileStream decompressedFileStream = File.Create(newFileName))
+                {
+                    using (DeflateStream decompressionStream = new DeflateStream(originalFileStream, CompressionMode.Decompress))
+                    {
+                        decompressionStream.CopyTo(decompressedFileStream);
+                    }
+                }
+            }
+
             StringBuilder logsb = new StringBuilder();
 
             /* Generate a new seed if blank */
             if (string.IsNullOrWhiteSpace(textSeed.Text))
             {
-                SetSeedBasedOnDifficulty();
+                SetSeedBasedOnSettings();
+            }
+            else
+            {
+                GetSettingsFromSeed();
             }
 
-            string difficulty = GetRandomizerDifficulty();
+            string difficulty = listDifficulty.SelectedItem.ToString();
 
             logsb.Append("Selecting difficulty is ").AppendLine(difficulty);
             logText.Text = logsb.ToString();
@@ -206,7 +225,7 @@ namespace SWD2Randomizer
                 locations = new LocationsCasual().Locations;
             }
 
-            Randomizer randomizer = new Randomizer(extractedDir, parsedSeed, locations);
+            Randomizer randomizer = new Randomizer(extractedDir, parsedSeed, locations, checkItems.Checked, checkAreas.Checked, checkResources.Checked, checkUpgrades.Checked);
 
             logsb.Append("Randomize");
             logText.Text = logsb.ToString();
@@ -286,49 +305,58 @@ namespace SWD2Randomizer
 
         }
 
-        private void SetSeedBasedOnDifficulty()
+        private void SetSeedBasedOnSettings()
         {
+            textSeed.Text = "";
             switch (listDifficulty.SelectedItem.ToString())
             {
                 case "Casual":
-                    textSeed.Text = string.Format("C{0:0000000}", (new SeedRandom()).Next(10000000));
+                    textSeed.Text += "C";
                     break;
                 default:
-                    textSeed.Text = string.Format("S{0:0000000}", (new SeedRandom()).Next(10000000));
+                    textSeed.Text += "S";
                     break;
             }
+            if (checkItems.Checked) { textSeed.Text += "I"; }
+            if (checkAreas.Checked) { textSeed.Text += "A"; }
+            if (checkResources.Checked) { textSeed.Text += "R"; }
+            if (checkUpgrades.Checked) { textSeed.Text += "U"; }
+
+            textSeed.Text += string.Format("{0:0000000}", (new SeedRandom()).Next(10000000));
         }
 
-        private string GetRandomizerDifficulty()
+        private void GetSettingsFromSeed()
         {
-            string difficulty = "Speedrunner";
-
             if (textSeed.Text.ToUpper().Contains("C"))
             {
-                difficulty = "Casual";
+                listDifficulty.SelectedItem = "Casual";
             }
             else if (textSeed.Text.ToUpper().Contains("S"))
             {
-                difficulty = "Speedrunner";
+                listDifficulty.SelectedItem = "Speedrunner";
             }
 
-            listDifficulty.SelectedItem = difficulty;
-
-            return difficulty;
+            checkItems.Checked = textSeed.Text.ToUpper().Contains("I");
+            checkAreas.Checked = textSeed.Text.ToUpper().Contains("A");
+            checkResources.Checked = textSeed.Text.ToUpper().Contains("R");
+            checkUpgrades.Checked = textSeed.Text.ToUpper().Contains("U");
         }
 
         private string GetSeed()
         {
-            if (textSeed.Text.ToUpper().Contains("C"))
-            {
-                return textSeed.Text.ToUpper().Replace("C", "");
-            }
-            else if (textSeed.Text.ToUpper().Contains("S"))
-            {
-                return textSeed.Text.ToUpper().Replace("S", "");
-            }
-            MessageBox.Show("The seed string is unrecognized.", "Seed Difficulty", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return "";
+            string seed = textSeed.Text.ToUpper();
+            seed = seed.Replace("C", "");
+            seed = seed.Replace("S", "");
+            seed = seed.Replace("I", "");
+            seed = seed.Replace("A", "");
+            seed = seed.Replace("R", "");
+            seed = seed.Replace("U", "");
+            return seed;
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

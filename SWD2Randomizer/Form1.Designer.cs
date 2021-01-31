@@ -42,6 +42,10 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.logText = new System.Windows.Forms.TextBox();
+            this.checkUpgrades = new System.Windows.Forms.CheckBox();
+            this.checkResources = new System.Windows.Forms.CheckBox();
+            this.checkAreas = new System.Windows.Forms.CheckBox();
+            this.checkItems = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -82,7 +86,7 @@
             // 
             // randomizeBtn
             // 
-            this.randomizeBtn.Location = new System.Drawing.Point(9, 45);
+            this.randomizeBtn.Location = new System.Drawing.Point(9, 72);
             this.randomizeBtn.Name = "randomizeBtn";
             this.randomizeBtn.Size = new System.Drawing.Size(75, 23);
             this.randomizeBtn.TabIndex = 3;
@@ -101,7 +105,7 @@
             // 
             // restoreBtn
             // 
-            this.restoreBtn.Location = new System.Drawing.Point(90, 45);
+            this.restoreBtn.Location = new System.Drawing.Point(90, 72);
             this.restoreBtn.Name = "restoreBtn";
             this.restoreBtn.Size = new System.Drawing.Size(75, 23);
             this.restoreBtn.TabIndex = 5;
@@ -161,6 +165,10 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.logText);
+            this.groupBox2.Controls.Add(this.checkItems);
+            this.groupBox2.Controls.Add(this.checkAreas);
+            this.groupBox2.Controls.Add(this.checkResources);
+            this.groupBox2.Controls.Add(this.checkUpgrades);
             this.groupBox2.Controls.Add(this.seedLabel);
             this.groupBox2.Controls.Add(this.textSeed);
             this.groupBox2.Controls.Add(this.randomizeBtn);
@@ -172,21 +180,70 @@
             this.groupBox2.Size = new System.Drawing.Size(590, 253);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
+            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
             // logText
             // 
-            this.logText.Location = new System.Drawing.Point(9, 79);
+            this.logText.Location = new System.Drawing.Point(0, 101);
             this.logText.Multiline = true;
             this.logText.Name = "logText";
             this.logText.ReadOnly = true;
-            this.logText.Size = new System.Drawing.Size(575, 168);
+            this.logText.Size = new System.Drawing.Size(575, 152);
             this.logText.TabIndex = 10;
+            // 
+            // checkUpgrades
+            // 
+            this.checkUpgrades.AutoSize = true;
+            this.checkUpgrades.Checked = true;
+            this.checkUpgrades.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkUpgrades.Location = new System.Drawing.Point(369, 49);
+            this.checkUpgrades.Name = "checkUpgrades";
+            this.checkUpgrades.Size = new System.Drawing.Size(126, 17);
+            this.checkUpgrades.TabIndex = 10;
+            this.checkUpgrades.Text = "Randomize upgrades";
+            this.checkUpgrades.UseVisualStyleBackColor = true;
+            // 
+            // checkResources
+            // 
+            this.checkResources.AutoSize = true;
+            this.checkResources.Checked = true;
+            this.checkResources.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkResources.Location = new System.Drawing.Point(235, 49);
+            this.checkResources.Name = "checkResources";
+            this.checkResources.Size = new System.Drawing.Size(128, 17);
+            this.checkResources.TabIndex = 10;
+            this.checkResources.Text = "Randomize resources";
+            this.checkResources.UseVisualStyleBackColor = true;
+            // 
+            // checkAreas
+            // 
+            this.checkAreas.AutoSize = true;
+            this.checkAreas.Checked = true;
+            this.checkAreas.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkAreas.Location = new System.Drawing.Point(121, 49);
+            this.checkAreas.Name = "checkAreas";
+            this.checkAreas.Size = new System.Drawing.Size(108, 17);
+            this.checkAreas.TabIndex = 10;
+            this.checkAreas.Text = "Randomize areas";
+            this.checkAreas.UseVisualStyleBackColor = true;
+            // 
+            // checkItems
+            // 
+            this.checkItems.AutoSize = true;
+            this.checkItems.Checked = true;
+            this.checkItems.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkItems.Location = new System.Drawing.Point(9, 49);
+            this.checkItems.Name = "checkItems";
+            this.checkItems.Size = new System.Drawing.Size(106, 17);
+            this.checkItems.TabIndex = 10;
+            this.checkItems.Text = "Randomize items";
+            this.checkItems.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(614, 349);
+            this.ClientSize = new System.Drawing.Size(613, 356);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Form1";
@@ -215,6 +272,10 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox logText;
+        private System.Windows.Forms.CheckBox checkUpgrades;
+        private System.Windows.Forms.CheckBox checkItems;
+        private System.Windows.Forms.CheckBox checkAreas;
+        private System.Windows.Forms.CheckBox checkResources;
     }
 }
 

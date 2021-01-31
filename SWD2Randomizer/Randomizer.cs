@@ -12,13 +12,21 @@ namespace SWD2Randomizer
         private readonly int seed;
         private List<string> haveFlags;
         private List<Location> locations;
+        private bool items;
+        private bool areas;
+        private bool resources;
+        private bool upgrades;
 
-        public Randomizer(string baseDir, int seed, List<Location> locations)
+        public Randomizer(string baseDir, int seed, List<Location> locations, bool items, bool areas, bool resources, bool upgrades)
         {
             random = new SeedRandom(seed);
             this.locations = locations;
             this.seed = seed;
             this.baseDir = baseDir;
+            this.items = items;
+            this.areas = areas;
+            this.resources = resources;
+            this.upgrades = upgrades;
             haveFlags = new List<string>();
         }
 
@@ -26,11 +34,17 @@ namespace SWD2Randomizer
         {
             bool ret;
 
-            ret = PermuteFlags(Location.RandomizeType.Upgrade);
-            if (!ret) return -1;
+            if (items)
+            {
+                ret = PermuteFlags(Location.RandomizeType.Upgrade);
+                if (!ret) return -1;
+            }
 
-            ret = PermuteFlags(Location.RandomizeType.Area);
-            if (!ret) return -1;
+            if (areas)
+            {
+                ret = PermuteFlags(Location.RandomizeType.Area);
+                if (!ret) return -1;
+            }
 
             ret = CheckValid();
             if (!ret) return 0;
@@ -168,8 +182,15 @@ namespace SWD2Randomizer
                 doc.Save(patchFile);
             }
 
-            RandomizeResources();
-            RandomizeCogUpgrades();
+            if (resources)
+            {
+                RandomizeResources();
+            }
+
+            if (upgrades)
+            {
+                RandomizeCogUpgrades();
+            }
 
             return 1;
         }

@@ -90,7 +90,7 @@ namespace SWD2Randomizer
             }
 
             XmlNode hubIntro = doc.SelectSingleNode("//Level[@Name='the_hub']/LayerFilters/Filter[@Layer='filter_intro']");
-            hubIntro.ParentNode.RemoveChild(hubIntro);
+            hubIntro.InnerXml = @"<Disable />";
 
             XmlNode hubPostIntro = doc.SelectSingleNode("//Level[@Name='the_hub']/LayerFilters/Filter[@Layer='filter_post_intro']");
             hubPostIntro.InnerXml = @"
@@ -288,7 +288,7 @@ namespace SWD2Randomizer
 
             checkQuestProp.InnerXml = @"
 			<Id>32566045</Id>
-			<Name>ProgressQuest5</Name>
+			<Name>ProgressQuest6</Name>
 			<Position>2389, 2036</Position>
 			<Definition>ProgressQuest</Definition>
 			<Area>2280, 2004, 216, 63</Area>
