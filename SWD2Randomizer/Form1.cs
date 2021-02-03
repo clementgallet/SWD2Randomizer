@@ -250,20 +250,24 @@ namespace SWD2Randomizer
 
                     /* Save upgrade locations into a file */
                     string cheatFile = Path.Combine(Directory.GetCurrentDirectory(), textSeed.Text + ".txt");
-                    using (StreamWriter outputFile = new StreamWriter(cheatFile))
+
+                    if (!File.Exists(cheatFile))
                     {
-                        foreach (var location in locations)
+                        using (StreamWriter outputFile = new StreamWriter(cheatFile))
                         {
-                            if (location.Type == SWD2Randomizer.Location.RandomizeType.Upgrade)
+                            foreach (var location in locations)
                             {
-                                outputFile.WriteLine(location.Name + " location contains " + location.Grant);
+                                if (location.Type == SWD2Randomizer.Location.RandomizeType.Upgrade)
+                                {
+                                    outputFile.WriteLine(location.Name + " location contains " + location.Grant);
+                                }
                             }
-                        }
-                        foreach (var location in locations)
-                        {
-                            if (location.Type == SWD2Randomizer.Location.RandomizeType.Area)
+                            foreach (var location in locations)
                             {
-                                outputFile.WriteLine("Door to " + location.Name + " contains " + location.Grant);
+                                if (location.Type == SWD2Randomizer.Location.RandomizeType.Area)
+                                {
+                                    outputFile.WriteLine("Door to " + location.Name + " contains " + location.Grant);
+                                }
                             }
                         }
                     }
