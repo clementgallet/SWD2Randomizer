@@ -207,7 +207,7 @@ namespace SWD2Randomizer
                     Name = "steampack",
                     Grant = "steampack",
                     Type = Location.RandomizeType.Upgrade,
-                    CanAccess = have => have.Contains("archaea_cave_vectron_entrance") && have.Contains("first_generator"),
+                    CanAccess = have => have.Contains("archaea_cave_vectron_entrance") && have.Contains("pressurebomb"),
                     CanEscape = have => have.Contains("steampack")
                 },
                 new Location

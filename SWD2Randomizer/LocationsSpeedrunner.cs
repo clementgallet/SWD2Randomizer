@@ -134,7 +134,7 @@ namespace SWD2Randomizer
                 {
                     Name = "ending",
                     Grant = "ending",
-                    CanAccess = have => have.Contains("tog_generator") && have.Contains("yarrow_generator") && have.Contains("totd_generator") && have.Contains("oasis")
+                    CanAccess = have => have.Contains("first_generator") && have.Contains("tog_generator") && have.Contains("yarrow_generator") && have.Contains("totd_generator") && have.Contains("oasis")
                 },
 
                 new Location
@@ -215,7 +215,7 @@ namespace SWD2Randomizer
                     Name = "steampack",
                     Grant = "steampack",
                     Type = Location.RandomizeType.Upgrade,
-                    CanAccess = have => have.Contains("archaea_cave_vectron_entrance") && have.Contains("first_generator"),
+                    CanAccess = have => have.Contains("archaea_cave_vectron_entrance") && have.Contains("pressurebomb"),
                     CanEscape = have => have.Contains("steampack") || have.Contains("hook")
                 },
                 new Location

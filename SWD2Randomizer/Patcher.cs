@@ -19,6 +19,8 @@ namespace SWD2Randomizer
             PatchIntro();
             PatchPriest();
             PatchHook();
+            PatchVectron();
+            PatchRosieAccess();
             PatchTriple();
             PatchOasis();
             PatchBlueprints();
@@ -72,6 +74,109 @@ namespace SWD2Randomizer
             target.ParentNode.RemoveChild(target);
 
             doc.Save(hubPatch);
+        }
+
+        /* Close Vectron access, and give access to upgrade */
+        public void PatchVectron()
+        {
+            string quests = Path.Combine(baseDir, "Definitions", "quests.xml");
+
+            XmlDocument doc = new XmlDocument();
+            try
+            {
+                doc.Load(quests);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("caught exception");
+            }
+
+            XmlNode questVectron = doc.SelectSingleNode("//Quest[@Name='quest_vectron_helper']");
+
+            /* I'm lazy */
+            questVectron.InnerXml = @"
+                <AutoStart>true</AutoStart>
+                <AutoComplete>true</AutoComplete>
+                <Objective Name='obj_outro_conv' />";
+
+            doc.Save(quests);
+
+            string cavePatch = Path.Combine(baseDir, "Patchsets", "Archaea", "archaea_cave_vectron_entrance.le");
+
+            try
+            {
+                doc.Load(cavePatch);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("caught exception");
+            }
+
+            XmlNode tiles = doc.SelectSingleNode("//TileLayer[Id='32565491']");
+
+            if (tiles != null)
+            {
+                /* Add the vertical snake tile in the list */
+                XmlElement snaketile = doc.CreateElement("Mapping");
+                snaketile.SetAttribute("Name", "snake_vertical_01");
+                snaketile.SetAttribute("FlipX", "False");
+                snaketile.SetAttribute("FlipY", "False");
+                snaketile.SetAttribute("Rotation", "False");
+                tiles["TileMappings"].AppendChild(snaketile);
+
+                tiles["Tiles"].ChildNodes[33].InnerText = "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 1 0 0 0 0 0 0 1 17 2 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1";
+            }
+
+            doc.Save(cavePatch);
+        }
+
+        /* Open door to Rosie after all generators */
+        public void PatchRosieAccess()
+        {
+            string hubPatch = Path.Combine(baseDir, "Patchsets", "TheHub", "the_hub_patch_main.le");
+
+            XmlDocument doc = new XmlDocument();
+            try
+            {
+                doc.Load(hubPatch);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("caught exception");
+            }
+
+            XmlNode door = doc.SelectSingleNode("//Property[Value='quest_destroy_the_last_generators']");
+
+            if (door != null)
+                door["Value"].InnerText = "quest_destroy_all_generators";
+
+            doc.Save(hubPatch);
+
+            /* Remove Oasis blockade */
+            string quests = Path.Combine(baseDir, "Definitions", "quests.xml");
+
+            try
+            {
+                doc.Load(quests);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("caught exception");
+            }
+
+            XmlNode questOasis = doc.SelectSingleNode("//Quest[@Name='quest_hub_teleport_blocked']");
+            questOasis.ParentNode.RemoveChild(questOasis);
+
+            questOasis = doc.SelectSingleNode("//Quest[@Name='quest_see_blockade']");
+            questOasis.ParentNode.RemoveChild(questOasis);
+
+            questOasis = doc.SelectSingleNode("//Quest[@Name='quest_hubtube']");
+            questOasis.ParentNode.RemoveChild(questOasis);
+
+            questOasis = doc.SelectSingleNode("//Quest[@Name='quest_confront_rosie']");
+            questOasis["UnlockedBy"].InnerText = "quest_destroy_all_generators";
+
+            doc.Save(quests);
         }
 
         /* Open Oasis front gate */
